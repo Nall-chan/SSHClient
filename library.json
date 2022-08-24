@@ -1,0 +1,12 @@
+{
+    "id": "{71DA5F77-4248-FB86-79EC-1A53A73073D4}",
+    "name": "SSH Client",
+    "author": "Michael Tröger",
+    "url": "https://github.com/Nall-chan/SSHClient",
+    "compatibility": {
+        "version": "6.0"
+    },
+    "version": "0.1",
+    "build": 1,
+    "date": 1661233219
+}
