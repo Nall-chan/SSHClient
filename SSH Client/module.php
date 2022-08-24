@@ -59,7 +59,7 @@ class SSHClient extends IPSModule
         $this->RegisterPropertyString('Address', '');
         $this->RegisterPropertyString('Username', '');
         $this->RegisterPropertyString('Password', '');
-        $this->RegisterPropertyString('Key', '');
+        $this->RegisterPropertyString('KeyFile', '');
         $this->RegisterAttributeString('HostKey','');
         $this->LastError='';
     }
@@ -67,9 +67,21 @@ class SSHClient extends IPSModule
     private function Login(): bool
     {
         $this->SendDebug(__FUNCTION__,'',0);
-        //    $key = \phpseclib\Crypt\PublicKeyLoader::load('...', '(optional) password');
         $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
-        if (!$this->ssh->login($this->ReadPropertyString('Username'), $this->ReadPropertyString('Password')))
+        $KeyData = $this->ReadPropertyString('KeyFile');
+        if ($KeyData)
+        {
+            $key = new \phpseclib\Crypt\RSA();
+            $pwd = $this->ReadPropertyString('Password');
+            if ($pwd)
+            {
+                $key->setPassword($pwd);
+            }
+            $key->loadKey(base64_decode($KeyData));
+        } else {
+            $key = $this->ReadPropertyString('Password');
+        }
+        if (!$this->ssh->login($this->ReadPropertyString('Username'), $key))
         {
             return false;
         }

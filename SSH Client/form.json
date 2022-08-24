@@ -31,10 +31,10 @@
                 {
                     "name": "Password",
                     "type": "PasswordTextBox",
-                    "caption": "Password"
+                    "caption": "Password for login or keyfile"
                 },
                 {
-                    "name": "Key",
+                    "name": "KeyFile",
                     "type": "SelectFile",
                     "caption": "Keyfile"
                 }
