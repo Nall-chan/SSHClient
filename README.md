@@ -47,7 +47,7 @@ Beschreibung des Moduls.
 ## 4. Einrichten der Instanzen in IP-Symcon
 
  Unter 'Instanz hinzufügen' kann das 'SSH Client'-Modul mithilfe des Schnellfilters gefunden werden.  
- ![Module](../imgs/Module.png)  
+ ![Module](imgs/Module.png)  
 	- Weitere Informationen zum Hinzufügen von Instanzen in der [Dokumentation der Instanzen](https://www.symcon.de/service/dokumentation/konzepte/instanzen/#Instanz_hinzufügen)
 
  ### Konfigurationsseite

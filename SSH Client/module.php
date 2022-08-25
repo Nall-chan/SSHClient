@@ -157,7 +157,6 @@ class SSHClient extends IPSModule
     }
     public function GetConfigurationForm()
     {
-        //$this->WriteAttributeString('HostKey', '');
         $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         if ($this->ReadAttributeString('HostKey') != '') {
             $Form['elements'][0]['items'][1]['visible'] = true;

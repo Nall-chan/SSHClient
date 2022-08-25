@@ -1,0 +1,34 @@
+{
+    "id": "{95C49518-295B-45F4-9320-562A36CF1CE3}",
+    "caption": "Execute command via SSH",
+    "form": [
+        {
+            "type": "ValidationTextBox",
+            "name": "COMMAND",
+            "caption": "Command"
+        }
+    ],
+    "action": "SSHC_Execute($_IPS['TARGET'], $_IPS['COMMAND']);",
+    "category": "target",
+    "restrictions": {
+        "objectType": [
+            1
+        ],
+        "moduleID": [
+            "{732B8B48-454C-1976-76AD-28ACEE8EEEFA}"
+        ],
+        "includeEnvironments": [
+            "TestCommands",
+            "Default"
+        ]
+    },
+    "locale": {
+        "de": {
+            "Execute command via SSH": "Befehl über SSH an Host senden",
+            "Command": "Befehl",
+            "Connects to host via SSH an sends the command.": "Verbindet sich über SSH mit dem Host und sendet den Befehl."
+        }
+    },
+    "format": "Connects to host via SSH an sends the command.",
+    "description": "Connects to host via SSH an sends the command."
+}

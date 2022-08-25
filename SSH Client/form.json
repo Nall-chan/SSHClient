@@ -27,7 +27,8 @@
                 {
                     "name": "Password",
                     "type": "PasswordTextBox",
-                    "caption": "Password for login or private key"
+                    "caption": "Password for login or private key",
+                    "width": "400px"
                 },
                 {
                     "name": "KeyFile",
