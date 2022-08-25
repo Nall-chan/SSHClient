@@ -1,12 +1,23 @@
 {
     "translations": {
         "de": {
-            "Open": "Aktiv",
             "Password": "Passwort",
-            "Configuration valid.": "Konfiguration gültig.",
-            "Instance is inactive.": "Instanz ist inaktiv.",
-            "Login failed.": "Anmeldung gescheitert.",
-            "Address not set.": "Adresse nicht gesetzt.",
+            "validate host": "Validiere Host",
+            "Username": "Benutzername",
+            "Password for login or private key": "Passwort für Login oder dem privaten Schlüssel",
+            "private key": "Privater Schlüssel",
+            "Save host key": "Speichere Schlüssel des Host",
+            "Check login": "Anmeldung prüfen",
+            "Failed to load key from host!": "Fehler beim laden des Schlüssel vom Host!",
+            "Failed to connect or login!": "Fehler beim verbinden oder anmelden!",
+            "Login successfully!": "Anmeldung erfolgreich!",
+            "Attention": "Achtung",
+            "The key will be saved and used to verifiy this host in all following requests!": "Der Schlüssel wird gespeichert und zum validieren des Host, bei allen folgenden Anfragen, benutzt!",
+            "Save": "Speichern",
+            "Close": "Schließen",
+            "Saved!": "Gespeichert!",
+            "Failed!": "Fehlgeschlagen!",
+            "This module contains 'phpseclib - PHP Secure Communications Library' (https://github.com/phpseclib/phpseclib)": "Dieses Modul enthält 'phpseclib - PHP Secure Communications Library' (https://github.com/phpseclib/phpseclib)",
             "This module is free for non-commercial use,\r\nDonations in support of the author are accepted here:": "Dieses Modul ist für die nicht kommerzielle Nutzung kostenlos,\r\nSchenkungen als Unterstützung für den Autor werden hier akzeptiert:"
         }
     }

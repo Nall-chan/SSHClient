@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 eval('declare(strict_types=1);namespace SSHClient {?>' . file_get_contents(__DIR__ . '/../libs/helper/BufferHelper.php') . '}');
 $AutoLoader = new AutoLoaderSSHClientPHPSecLib('Net\SSH2');
 $AutoLoader->register();
@@ -22,7 +23,7 @@ class AutoLoaderSSHClientPHPSecLib
     public function loadClass($className)
     {
         $LibPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'libs' . DIRECTORY_SEPARATOR . 'phpseclib' . DIRECTORY_SEPARATOR;
-        $file = $LibPath . str_replace(['\\','phpseclib3'], [DIRECTORY_SEPARATOR,'phpseclib'], $className) . '.php';
+        $file = $LibPath . str_replace(['\\', 'phpseclib3'], [DIRECTORY_SEPARATOR, 'phpseclib'], $className) . '.php';
         if (file_exists($file)) {
             require_once $file;
         }
@@ -40,7 +41,7 @@ class AutoLoaderSSHClientPHPSecLib
  * @version       1.00
  *
  * @example <b>Ohne</b>
- * 
+ *
  * @property string $LastError
  * @property string $TempHostKey
  */
@@ -48,101 +49,80 @@ class SSHClient extends IPSModule
 {
     use \SSHClient\BufferHelper;
 
-    protected \phpseclib\Net\SSH2 $ssh;
+    protected $ssh;
 
     public function Create()
     {
         //Never delete this line!
         parent::Create();
-        $this->RegisterPropertyBoolean('Active',false);
-        $this->RegisterPropertyBoolean('CheckHost',false);
+        $this->RegisterPropertyBoolean('CheckHost', false);
         $this->RegisterPropertyString('Address', '');
         $this->RegisterPropertyString('Username', '');
         $this->RegisterPropertyString('Password', '');
         $this->RegisterPropertyString('KeyFile', '');
-        $this->RegisterAttributeString('HostKey','');
-        $this->LastError='';
+        $this->RegisterAttributeString('HostKey', '');
+        $this->LastError = '';
     }
 
-    private function Login(): bool
+    public function RequestAction($Ident, $Value)
     {
-        $this->SendDebug(__FUNCTION__,'',0);
-        $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
-        $KeyData = $this->ReadPropertyString('KeyFile');
-        if ($KeyData)
-        {
-            $key = new \phpseclib\Crypt\RSA();
-            $pwd = $this->ReadPropertyString('Password');
-            if ($pwd)
-            {
-                $key->setPassword($pwd);
-            }
-            $key->loadKey(base64_decode($KeyData));
-        } else {
-            $key = $this->ReadPropertyString('Password');
-        }
-        if (!$this->ssh->login($this->ReadPropertyString('Username'), $key))
-        {
-            return false;
-        }
-        if ($this->ReadPropertyString('CheckHost')){
-            $HostKey = $this->ReadAttributeString('HostKey');
-            if ($HostKey==''){
-                return false;
-            }
-            if ($HostKey != $this->ssh->getServerPublicHostKey()){
-                return false;
-            }
-        }
-        return true;
+        switch ($Ident) {
+            case 'GetHostKey':
+            case 'CheckLogin':
+            case 'SaveHostKey':
+                $this->{$Ident}();
+            break;
+       }
     }
 
-    private function Close(): void
+    private function GetHostKey()
     {
-        $this->SendDebug(__FUNCTION__,'',0);
-        if ($this->ssh->isConnected()) {
-            $this->ssh->disconnect();
-        }
-    }
-
-    public function GetHostKey(): bool
-        {
-        $this->SendDebug(__FUNCTION__,'',0);
+        $this->SendDebug(__FUNCTION__, '', 0);
         $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
-        if (!$this->ssh->login($this->ReadPropertyString('Username'), $this->ReadPropertyString('Password'))){
-            return false;
+        if (!@$this->ssh->login($this->ReadPropertyString('Username'), $this->ReadPropertyString('Password'))) {
+            echo $this->Translate('Failed to connect or login!');
+            return;
         }
         $HostKey = $this->ssh->getServerPublicHostKey();
-        if ($HostKey === false){
-            return false;
+        if ($HostKey === false) {
+            echo $this->Translate('Failed to load key from host!');
+            @$this->Close();
+            return;
         }
-        $this->TempHostKey= $HostKey;
-        $this->UpdateFormField();
+        $this->TempHostKey = $HostKey;
+        $this->UpdateFormField('PopupKey', 'visible', true);
         $this->Close();
-        return true;
-    }
-    public function SaveHostKey(): bool
-    {
-if ($this->TempHostKey != ''){
-    $this->WriteAttributeString('HostKey',$this->TempHostKey);
-    return true;
-}
-return false;
-    }
-    public function CheckLogin(): bool
-    {
-        $this->SendDebug(__FUNCTION__,'',0);
-        $ret =  $this->Login();
-        $this->Close();
-        return $ret;
     }
 
-    public function Execute(string $Data): string
+    private function SaveHostKey()
     {
-        $this->SendDebug(__FUNCTION__,'',0);
+        if ($this->TempHostKey != '') {
+            $this->WriteAttributeString('HostKey', $this->TempHostKey);
+            $this->UpdateFormField('CheckHost', 'visible', true);
+            $this->UpdateFormField('CheckHost', 'value', true);
+            echo $this->Translate('Saved!');
+        } else {
+            echo $this->Translate('Failed!');
+        }
+    }
+
+    private function CheckLogin()
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        if ($this->Login()) {
+            echo $this->Translate('Login successfully!');
+        } else {
+            echo $this->Translate('Failed to connect or login!');
+        }
+        $this->Close();
+    }
+
+    public function Execute(string $Data)
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
         if (!$this->Login()) {
-                return false;
-            }
+            return false;
+        }
         $this->ssh->enableQuietMode();
         $ret = $this->ssh->exec($Data);
         $this->LastError = $this->ssh->getStdError();
@@ -150,29 +130,20 @@ return false;
         return $ret;
     }
 
-    public function ExecuteEx(array $DataArray): string
+    public function ExecuteEx(array $DataArray)
     {
-        $this->SendDebug(__FUNCTION__,'',0);
-        $ret= $this->Execute(implode("\n",$DataArray));
+        $this->SendDebug(__FUNCTION__, '', 0);
+        $ret = $this->Execute(implode("\n", $DataArray));
         $this->Close();
         return $ret;
     }
-public function GetLastError():string{
-    $LastError = $this->LastError;
-    $this->LastError = '';;
-    return $LastError;
-}
 
-private function SetLastError($stdErr):void
-{
-    $LastError = $this->LastError;
-    if ((strlen($LastError) + ($stdErr)) < 64000){
-        $LastError.=$stdErr;
-        $this->LastError = $LastError;
-    } else {
-        $this->LastError = $stdErr;
+    public function GetLastError(): string
+    {
+        $LastError = $this->LastError;
+        $this->LastError = '';
+        return $LastError;
     }
-}
     public function Destroy()
     {
         //Never delete this line!
@@ -184,4 +155,63 @@ private function SetLastError($stdErr):void
         //Never delete this line!
         parent::ApplyChanges();
     }
+    public function GetConfigurationForm()
+    {
+        //$this->WriteAttributeString('HostKey', '');
+        $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+        if ($this->ReadAttributeString('HostKey') != '') {
+            $Form['elements'][0]['items'][1]['visible'] = true;
+        }
+        $this->SendDebug('FORM', json_encode($Form), 0);
+        $this->SendDebug('FORM', json_last_error_msg(), 0);
+        return json_encode($Form);
+    }
+    private function Login(): bool
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
+        $KeyData = $this->ReadPropertyString('KeyFile');
+        if ($KeyData) {
+            $key = new \phpseclib\Crypt\RSA();
+            $pwd = $this->ReadPropertyString('Password');
+            if ($pwd) {
+                $key->setPassword($pwd);
+            }
+            $key->loadKey(base64_decode($KeyData));
+        } else {
+            $key = $this->ReadPropertyString('Password');
+        }
+        if (!@$this->ssh->login($this->ReadPropertyString('Username'), $key)) {
+            return false;
+        }
+        if ($this->ReadPropertyBoolean('CheckHost')) {
+            $HostKey = $this->ReadAttributeString('HostKey');
+            if ($HostKey == '') {
+                return false;
+            }
+            if ($HostKey != $this->ssh->getServerPublicHostKey()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function Close(): void
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        if ($this->ssh->isConnected()) {
+            $this->ssh->disconnect();
+        }
+    }
+
+    /*private function SetLastError($stdErr)
+    {
+        $LastError = $this->LastError;
+        if ((strlen($LastError) + ($stdErr)) < 64000) {
+            $LastError .= $stdErr;
+            $this->LastError = $LastError;
+        } else {
+            $this->LastError = $stdErr;
+        }
+    }*/
 }

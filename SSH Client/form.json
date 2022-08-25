@@ -1,11 +1,6 @@
 {
     "elements": [
         {
-            "name": "Active",
-            "type": "CheckBox",
-            "caption": "Open"
-        },
-        {
             "type": "RowLayout",
             "items": [
                 {
@@ -16,7 +11,8 @@
                 {
                     "name": "CheckHost",
                     "type": "CheckBox",
-                    "caption": "Check host key"
+                    "visible": false,
+                    "caption": "validate host"
                 }
             ]
         },
@@ -31,12 +27,12 @@
                 {
                     "name": "Password",
                     "type": "PasswordTextBox",
-                    "caption": "Password for login or keyfile"
+                    "caption": "Password for login or private key"
                 },
                 {
                     "name": "KeyFile",
                     "type": "SelectFile",
-                    "caption": "Keyfile"
+                    "caption": "private key"
                 }
             ]
         }
@@ -45,33 +41,37 @@
         {
             "type": "Button",
             "caption": "Save host key",
-            "onClick": "if (SSHC_GetHostKey($id)){ echo 'OK';}else{ echo 'failed';} "
+            "onClick": "IPS_RequestAction($id,'GetHostKey',true);"
         },
         {
             "type": "Button",
             "caption": "Check login",
-            "onClick": "if (SSHC_CheckLogin($id)){ echo 'OK';}else{ echo 'failed';} "
+            "onClick": "IPS_RequestAction($id,'CheckLogin',true);"
         },
         {
             "type": "PopupAlert",
+            "name": "PopupKey",
             "visible": false,
-            "popup": [
-                {
-                    "closeCaption": "Abort",
-                    "buttons": [
-                        {
-                            "caption": "Save",
-                            "onClick": "if (SSHC_SaveHostKey($id)){ echo 'Saved!';}else{ echo 'failed';} "
-                        }
-                    ],
-                    "items": [
-                        {
-                            "type": "Label",
-                            "caption": "Attention"
-                        }
-                    ]
-                }
-            ]
+            "popup": {
+                "closeCaption": "Close",
+                "buttons": [
+                    {
+                        "caption": "Save",
+                        "onClick": "IPS_RequestAction($id,'SaveHostKey',true);"
+                    }
+                ],
+                "items": [
+                    {
+                        "type": "Label",
+                        "caption": "Attention",
+                        "bold": true
+                    },
+                    {
+                        "type": "Label",
+                        "caption": "The key will be saved and used to verifiy this host in all following requests!"
+                    }
+                ]
+            }
         },
         {
             "type": "Label",
