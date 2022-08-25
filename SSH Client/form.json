@@ -42,12 +42,12 @@
         {
             "type": "Button",
             "caption": "Save host key",
-            "onClick": "IPS_RequestAction($id,'GetHostKey',true);"
+            "onClick": "SSHC_GetHostKey($id);"
         },
         {
             "type": "Button",
             "caption": "Check login",
-            "onClick": "IPS_RequestAction($id,'CheckLogin',true);"
+            "onClick": "SSHC_CheckLogin($id);"
         },
         {
             "type": "PopupAlert",
@@ -58,7 +58,7 @@
                 "buttons": [
                     {
                         "caption": "Save",
-                        "onClick": "IPS_RequestAction($id,'SaveHostKey',true);"
+                        "onClick": "SSHC_SaveHostKey($id);"
                     }
                 ],
                 "items": [

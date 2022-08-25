@@ -15,5 +15,4 @@ class LibraryValidationTest extends TestCaseSymconValidation
     {
         $this->validateModule(__DIR__ . '/../SSH Client');
     }
-
 }

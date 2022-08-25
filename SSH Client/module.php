@@ -64,18 +64,7 @@ class SSHClient extends IPSModule
         $this->LastError = '';
     }
 
-    public function RequestAction($Ident, $Value)
-    {
-        switch ($Ident) {
-            case 'GetHostKey':
-            case 'CheckLogin':
-            case 'SaveHostKey':
-                $this->{$Ident}();
-            break;
-       }
-    }
-
-    private function GetHostKey()
+    public function GetHostKey()
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
@@ -94,7 +83,7 @@ class SSHClient extends IPSModule
         $this->Close();
     }
 
-    private function SaveHostKey()
+    public function SaveHostKey()
     {
         if ($this->TempHostKey != '') {
             $this->WriteAttributeString('HostKey', $this->TempHostKey);
@@ -106,7 +95,7 @@ class SSHClient extends IPSModule
         }
     }
 
-    private function CheckLogin()
+    public function CheckLogin()
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         if ($this->Login()) {
