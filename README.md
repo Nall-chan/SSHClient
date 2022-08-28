@@ -137,7 +137,7 @@ Wenn eine 'SSH Client' Instanz als Ziel einer [`Aktion`](https://www.symcon.de/s
 ### 1. Changelog
 
 Version 1.00:  
-- Testing Version für Symcon 6.1  
+- Release Version für Symcon 6.1  
 
 ### 2. Spenden
 
