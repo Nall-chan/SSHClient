@@ -154,34 +154,57 @@ class SSHClient extends IPSModule
         $this->SendDebug('FORM', json_last_error_msg(), 0);
         return json_encode($Form);
     }
+
+    protected function ModulErrorHandler($errno, $errstr)
+    {
+        if (!(error_reporting() & $errno)) {
+            // Dieser Fehlercode ist nicht in error_reporting enthalten
+            return true;
+        }
+        $this->SendDebug('ERROR', utf8_decode($errstr), 0);
+        echo $errstr . "\r\n";
+    }
     private function Login(): bool
     {
         $this->SendDebug(__FUNCTION__, '', 0);
-        $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
-        $KeyData = $this->ReadPropertyString('KeyFile');
-        if ($KeyData) {
-            $key = new \phpseclib\Crypt\RSA();
-            $pwd = $this->ReadPropertyString('Password');
-            if ($pwd) {
-                $key->setPassword($pwd);
+        set_error_handler([$this, 'ModulErrorHandler']);
+
+        try {
+            $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
+            $KeyData = $this->ReadPropertyString('KeyFile');
+            if ($KeyData) {
+                $key = new \phpseclib\Crypt\RSA();
+                $pwd = $this->ReadPropertyString('Password');
+                if ($pwd) {
+                    $key->setPassword($pwd);
+                }
+                $key->loadKey(base64_decode($KeyData));
+            } else {
+                $key = $this->ReadPropertyString('Password');
             }
-            $key->loadKey(base64_decode($KeyData));
-        } else {
-            $key = $this->ReadPropertyString('Password');
-        }
-        if (!@$this->ssh->login($this->ReadPropertyString('Username'), $key)) {
-            return false;
-        }
-        if ($this->ReadPropertyBoolean('CheckHost')) {
-            $HostKey = $this->ReadAttributeString('HostKey');
-            if ($HostKey == '') {
+            if (!$this->ssh->login($this->ReadPropertyString('Username'), $key)) {
+                restore_error_handler();
                 return false;
             }
-            if ($HostKey != $this->ssh->getServerPublicHostKey()) {
-                return false;
+            if ($this->ReadPropertyBoolean('CheckHost')) {
+                $HostKey = $this->ReadAttributeString('HostKey');
+                if ($HostKey == '') {
+                    restore_error_handler();
+                    return false;
+                }
+                if ($HostKey != $this->ssh->getServerPublicHostKey()) {
+                    restore_error_handler();
+                    return false;
+                }
             }
+            restore_error_handler();
+            return true;
+        } catch (Throwable $ex) {
+            $this->SendDebug('ERROR:' . $ex->getCode(), $ex->getMessage(), 0);
+            echo 'ERROR:' . $ex->getCode() . "\r\n" . $ex->getMessage();
         }
-        return true;
+        restore_error_handler();
+        return false;
     }
 
     private function Close(): void
