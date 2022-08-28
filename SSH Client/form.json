@@ -33,7 +33,7 @@
                 {
                     "name": "KeyFile",
                     "type": "SelectFile",
-                    "caption": "private key"
+                    "caption": "private key (RSA only)"
                 }
             ]
         }

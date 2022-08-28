@@ -5,7 +5,7 @@
             "validate host": "Validiere Host",
             "Username": "Benutzername",
             "Password for login or private key": "Passwort für Login oder dem privaten Schlüssel",
-            "private key": "Privater Schlüssel",
+            "private key (RSA only)": "Privater Schlüssel (nur RSA)",
             "Save host key": "Speichere Schlüssel des Host",
             "Check login": "Anmeldung prüfen",
             "Failed to load key from host!": "Fehler beim laden des Schlüssel vom Host!",

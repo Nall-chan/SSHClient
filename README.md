@@ -31,7 +31,7 @@ Beschreibung des Moduls.
 ## 1. Funktionsumfang
 
 * Stellt einen SSH-Client als Modul bereit  
-* Unterstützt Anmeldung per Passwort als auch per privaten Schlüssel  
+* Unterstützt Anmeldung per Passwort als auch per privaten Schlüssel (aktuell nur RSA)  
 * Optionale Validierung des Server möglich
 
 ## 2. Voraussetzungen
@@ -76,6 +76,7 @@ Wird diese Einstellung aktiviert, wird bei jeder Anfrage der Schlüssel überpr�
 
 Mittels eines Datei-Uploads über die Schaltfläche 'privater Schlüssel' kann der Schlüssel für die Anmeldung in Symcon hinterlegt werden.  
 Ist der der Schlüssel mit einem Passwort (Passphrase) gesichert, so ist Dieses im Passwort Feld einzutragen.  
+**Aufgrund der PHP Abhängigkeit zu Symcon werden aktuell nur RSA Schlüssel unterstützt.**  
 
 ## 5. Statusvariablen
 
@@ -110,6 +111,13 @@ string|boolean SSHC_ExecuteEX(integer $InstanzID, array $Command);
 ```
 Sendet die in `$Command` übergeben Befehlszeilen an den Host und liefert **ein** Ergebnis als Rückgabewert.  
 Ansonsten gelten die gleichen Hinweise zum Rückgabewert wie bei `SSHC_Execute`.
+```php
+$Result = SSHC_ExecuteEx(12345, ['cd /', 'ls -la']);
+if ( $Result=== false){
+	exit ("Fehler bei der Verbindung");
+}
+echo $Result;
+```
 
 
 ``` php
