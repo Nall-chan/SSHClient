@@ -96,10 +96,14 @@ Der Rückgabewert kann auch bei erfolgreichen Ausführen eine leere Zeichenkette
 Im Fehlerfall enthält der Rückgabewert `false`.  
 Somit ist bei der Prüfung des Rückgabewert eine typensichere Prüfung mit drei Gleichzeichen zu verwenden:
 ```php
-if (SSHC_Execute(12345, 'ls') === false){
-	exit "Fehler bei der Verbindung";
+$Result = SSHC_Execute(12345, 'ls');
+if ( $Result=== false){
+	exit ("Fehler bei der Verbindung");
 }
+echo $Result;
 ```
+
+
 
 ``` php
 string|boolean SSHC_ExecuteEX(integer $InstanzID, array $Command);
