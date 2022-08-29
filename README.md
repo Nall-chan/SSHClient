@@ -1,5 +1,5 @@
 [![SDK](https://img.shields.io/badge/Symcon-PHPModul-red.svg)](https://www.symcon.de/service/dokumentation/entwicklerbereich/sdk-tools/sdk-php/)
-[![Version](https://img.shields.io/badge/Modul%20Version-1.00-blue.svg)]()
+[![Version](https://img.shields.io/badge/Modul%20Version-1.00-blue.svg)](https://community.symcon.de/t/modul-ssh-client/130090)
 [![Version](https://img.shields.io/badge/Symcon%20Version-6.1%20%3E-green.svg)](https://www.symcon.de/service/dokumentation/installation/migrationen/v60-v61-q1-2022/)  
 [![License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![Check Style](https://github.com/Nall-chan/SSHClient/workflows/Check%20Style/badge.svg)](https://github.com/Nall-chan/SSHClient/actions)
@@ -68,7 +68,7 @@ Der Button 'Anmeldung prüfen' kann zum überprüfen der Einstellungen verwendet
 
 ![Config](imgs/Config2.png)  
 
-Über den Button 'Speichere Schlüssel des Host' kann der öffentliche Schlüssel des Host abgerufen und anschließend in dr Instanz abgespeichert werden.  
+Über den Button 'Speichere Schlüssel des Host' kann der öffentliche Schlüssel des Host abgerufen und anschließend in der Instanz abgespeichert werden.  
 Anschließend steht als neue konfigurierbare Option die Auswahl 'Validiere Host' zur Verfügung.  
 Wird diese Einstellung aktiviert, wird bei jeder Anfrage der Schlüssel überprüft und im Fehlerfall die Verbindung abgebrochen.  
 
