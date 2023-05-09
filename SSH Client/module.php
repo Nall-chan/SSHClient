@@ -31,7 +31,7 @@ class AutoLoaderSSHClientPHPSecLib
 }
 
 /**
- * SqueezeboxBattery Klasse für die Stromversorgung einer SqueezeBox als Instanz in IPS.
+ * SSHClient Klasse für eine SSH Verbindung zu einem Endgerät.
  * Erweitert IPSModule.
  *
  * @author        Michael Tröger <micha@nall-chan.net>
