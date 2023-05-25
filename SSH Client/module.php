@@ -15,12 +15,12 @@ class AutoLoaderSSHClientPHPSecLib
         $this->namespace = $namespace;
     }
 
-    public function register():void
+    public function register(): void
     {
         spl_autoload_register([$this, 'loadClass']);
     }
 
-    public function loadClass($className):void
+    public function loadClass($className): void
     {
         $LibPath = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'libs' . DIRECTORY_SEPARATOR . 'phpseclib' . DIRECTORY_SEPARATOR;
         $file = $LibPath . str_replace(['\\', 'phpseclib3'], [DIRECTORY_SEPARATOR, 'phpseclib'], $className) . '.php';
@@ -51,7 +51,7 @@ class SSHClient extends IPSModuleStrict
 
     protected $ssh;
 
-    public function Create():void
+    public function Create(): void
     {
         //Never delete this line!
         parent::Create();
@@ -64,7 +64,7 @@ class SSHClient extends IPSModuleStrict
         $this->LastError = '';
     }
 
-    public function GetHostKey():void
+    public function GetHostKey(): void
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
@@ -83,7 +83,7 @@ class SSHClient extends IPSModuleStrict
         $this->Close();
     }
 
-    public function SaveHostKey():void
+    public function SaveHostKey(): void
     {
         if ($this->TempHostKey != '') {
             $this->WriteAttributeString('HostKey', $this->TempHostKey);
@@ -95,7 +95,7 @@ class SSHClient extends IPSModuleStrict
         }
     }
 
-    public function CheckLogin():void
+    public function CheckLogin(): void
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         if ($this->Login()) {
@@ -106,7 +106,7 @@ class SSHClient extends IPSModuleStrict
         $this->Close();
     }
 
-    public function Execute(string $Data):false|string
+    public function Execute(string $Data): false|string
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         if (!$this->Login()) {
@@ -119,7 +119,7 @@ class SSHClient extends IPSModuleStrict
         return $ret;
     }
 
-    public function ExecuteEx(array $DataArray):false|string
+    public function ExecuteEx(array $DataArray): false|string
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $ret = $this->Execute(implode("\n", $DataArray));
@@ -133,18 +133,18 @@ class SSHClient extends IPSModuleStrict
         $this->LastError = '';
         return $LastError;
     }
-    public function Destroy():void
+    public function Destroy(): void
     {
         //Never delete this line!
         parent::Destroy();
     }
 
-    public function ApplyChanges():void
+    public function ApplyChanges(): void
     {
         //Never delete this line!
         parent::ApplyChanges();
     }
-    public function GetConfigurationForm():string
+    public function GetConfigurationForm(): string
     {
         $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
         if ($this->ReadAttributeString('HostKey') != '') {
