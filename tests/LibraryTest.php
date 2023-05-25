@@ -11,7 +11,7 @@ class LibraryTest extends TestCaseSymconValidation
         $this->validateLibrary(__DIR__ . '/..');
     }
 
-    public function testValidateConfigurator(): void
+    public function testValidateSSHClient(): void
     {
         $this->validateModule(__DIR__ . '/../SSH Client');
     }
