@@ -143,11 +143,15 @@ class SSHClient extends IPSModuleStrict
     {
         //Never delete this line!
         parent::ApplyChanges();
+        if (!$this->ReadPropertyBoolean('CheckHost')) {
+            $this->WriteAttributeString('HostKey', '');
+        }
     }
+
     public function GetConfigurationForm(): string
     {
         $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-        if ($this->ReadAttributeString('HostKey') != '') {
+        if ($this->ReadAttributeString('HostKey') != '' || $this->ReadPropertyBoolean('CheckHost')) {
             $Form['elements'][0]['items'][1]['visible'] = true;
         }
         $this->SendDebug('FORM', json_encode($Form), 0);
