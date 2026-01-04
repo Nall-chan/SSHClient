@@ -33,7 +33,7 @@
                 {
                     "name": "KeyFile",
                     "type": "SelectFile",
-                    "caption": "private key (RSA only)"
+                    "caption": "private key"
                 }
             ]
         }
@@ -42,7 +42,7 @@
         {
             "type": "Button",
             "caption": "Save host key",
-            "onClick": "SSHC_GetHostKey($id);"
+            "onClick": "IPS_RequestAction($id, 'LoadHostKey', '');"
         },
         {
             "type": "Button",
@@ -58,7 +58,7 @@
                 "buttons": [
                     {
                         "caption": "Save",
-                        "onClick": "SSHC_SaveHostKey($id);"
+                        "onClick": "SSHC_UISaveHostKey($id);"
                     }
                 ],
                 "items": [

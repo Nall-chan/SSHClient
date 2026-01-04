@@ -6,6 +6,9 @@ eval('declare(strict_types=1);namespace SSHClient {?>' . file_get_contents(__DIR
 $AutoLoader = new AutoLoaderSSHClientPHPSecLib('Net\SSH2');
 $AutoLoader->register();
 
+/**
+ * AutoLoaderSSHClientPHPSecLib
+ */
 class AutoLoaderSSHClientPHPSecLib
 {
     private $namespace;
@@ -51,6 +54,11 @@ class SSHClient extends IPSModuleStrict
 
     protected $ssh;
 
+    /**
+     * Create
+     *
+     * @return void
+     */
     public function Create(): void
     {
         //Never delete this line!
@@ -64,7 +72,134 @@ class SSHClient extends IPSModuleStrict
         $this->LastError = '';
     }
 
-    public function GetHostKey(): void
+    /**
+     * ApplyChanges
+     *
+     * @return void
+     */
+    public function ApplyChanges(): void
+    {
+        //Never delete this line!
+        parent::ApplyChanges();
+        if (!$this->ReadPropertyBoolean('CheckHost')) {
+            $this->WriteAttributeString('HostKey', '');
+        }
+    }
+
+    /**
+     * GetConfigurationForm
+     *
+     * @return string
+     */
+    public function GetConfigurationForm(): string
+    {
+        $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
+        if ($this->ReadAttributeString('HostKey') != '' || $this->ReadPropertyBoolean('CheckHost')) {
+            $Form['elements'][0]['items'][1]['visible'] = true;
+        }
+        $this->SendDebug('FORM', json_encode($Form), 0);
+        $this->SendDebug('FORM', json_last_error_msg(), 0);
+        return json_encode($Form);
+    }
+
+    /**
+     * RequestAction
+     *
+     * @param  string $Ident
+     * @param  mixed $Value
+     * @return void
+     */
+    public function RequestAction(string $Ident, mixed $Value): void
+    {
+        if ($Ident == 'LoadHostKey') {
+            $this->GetHostKey();
+        }
+    }
+
+    /**
+     * CheckLogin
+     *
+     * @return void
+     */
+    public function CheckLogin(): void
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        if ($this->Login()) {
+            echo $this->Translate('Login successfully!');
+        } else {
+            echo $this->Translate('Failed to connect or login!');
+        }
+        $this->Close();
+    }
+
+    /**
+     * Execute
+     *
+     * @param  string $Data
+     * @return false|string
+     */
+    public function Execute(string $Data): false|string
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        if (!$this->Login()) {
+            return false;
+        }
+        $this->ssh->enableQuietMode();
+        $ret = $this->ssh->exec($Data);
+        $this->LastError = $this->ssh->getStdError();
+        $this->Close();
+        return $ret;
+    }
+
+    /**
+     * ExecuteEx
+     *
+     * @param  array $DataArray
+     * @return false|string
+     */
+    public function ExecuteEx(array $DataArray): false|string
+    {
+        $this->SendDebug(__FUNCTION__, '', 0);
+        $ret = $this->Execute(implode("\n", $DataArray));
+        $this->Close();
+        return $ret;
+    }
+
+    /**
+     * GetLastError
+     *
+     * @return string
+     */
+    public function GetLastError(): string
+    {
+        $LastError = $this->LastError;
+        $this->LastError = '';
+        return $LastError;
+    }
+
+    /**
+     * SaveHostKey
+     *
+     * @return void
+     */
+    public function UISaveHostKey(): void
+    {
+        if ($this->TempHostKey != '') {
+            $this->WriteAttributeString('HostKey', $this->TempHostKey);
+            $this->UpdateFormField('CheckHost', 'visible', true);
+            $this->UpdateFormField('CheckHost', 'value', true);
+            echo $this->Translate('MESSAGE:Saved!');
+        } else {
+            echo $this->Translate('Failed!');
+        }
+    }
+
+    /**
+     * GetHostKey
+     *
+     * @return void
+     */
+    private function GetHostKey(): void
     {
         $this->SendDebug(__FUNCTION__, '', 0);
         $this->ssh = new \phpseclib3\Net\SSH2($this->ReadPropertyString('Address'));
@@ -83,82 +218,11 @@ class SSHClient extends IPSModuleStrict
         $this->Close();
     }
 
-    public function SaveHostKey(): void
-    {
-        if ($this->TempHostKey != '') {
-            $this->WriteAttributeString('HostKey', $this->TempHostKey);
-            $this->UpdateFormField('CheckHost', 'visible', true);
-            $this->UpdateFormField('CheckHost', 'value', true);
-            echo $this->Translate('Saved!');
-        } else {
-            echo $this->Translate('Failed!');
-        }
-    }
-
-    public function CheckLogin(): void
-    {
-        $this->SendDebug(__FUNCTION__, '', 0);
-        if ($this->Login()) {
-            echo $this->Translate('Login successfully!');
-        } else {
-            echo $this->Translate('Failed to connect or login!');
-        }
-        $this->Close();
-    }
-
-    public function Execute(string $Data): false|string
-    {
-        $this->SendDebug(__FUNCTION__, '', 0);
-        if (!$this->Login()) {
-            return false;
-        }
-        $this->ssh->enableQuietMode();
-        $ret = $this->ssh->exec($Data);
-        $this->LastError = $this->ssh->getStdError();
-        $this->Close();
-        return $ret;
-    }
-
-    public function ExecuteEx(array $DataArray): false|string
-    {
-        $this->SendDebug(__FUNCTION__, '', 0);
-        $ret = $this->Execute(implode("\n", $DataArray));
-        $this->Close();
-        return $ret;
-    }
-
-    public function GetLastError(): string
-    {
-        $LastError = $this->LastError;
-        $this->LastError = '';
-        return $LastError;
-    }
-    public function Destroy(): void
-    {
-        //Never delete this line!
-        parent::Destroy();
-    }
-
-    public function ApplyChanges(): void
-    {
-        //Never delete this line!
-        parent::ApplyChanges();
-        if (!$this->ReadPropertyBoolean('CheckHost')) {
-            $this->WriteAttributeString('HostKey', '');
-        }
-    }
-
-    public function GetConfigurationForm(): string
-    {
-        $Form = json_decode(file_get_contents(__DIR__ . '/form.json'), true);
-        if ($this->ReadAttributeString('HostKey') != '' || $this->ReadPropertyBoolean('CheckHost')) {
-            $Form['elements'][0]['items'][1]['visible'] = true;
-        }
-        $this->SendDebug('FORM', json_encode($Form), 0);
-        $this->SendDebug('FORM', json_last_error_msg(), 0);
-        return json_encode($Form);
-    }
-
+    /**
+     * Login
+     *
+     * @return bool
+     */
     private function Login(): bool
     {
         $this->SendDebug(__FUNCTION__, '', 0);
@@ -188,6 +252,11 @@ class SSHClient extends IPSModuleStrict
         return true;
     }
 
+    /**
+     * Close
+     *
+     * @return void
+     */
     private function Close(): void
     {
         $this->SendDebug(__FUNCTION__, '', 0);

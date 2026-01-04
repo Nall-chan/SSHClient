@@ -4,9 +4,9 @@
     "author": "Michael Tröger",
     "url": "https://github.com/Nall-chan/SSHClient",
     "compatibility": {
-        "version": "7.0"
+        "version": "8.1"
     },
-    "version": "1.10",
-    "build": 2,
-    "date": 1685029007
+    "version": "1.30",
+    "build": 130,
+    "date": 1767519023
 }
