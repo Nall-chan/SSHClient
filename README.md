@@ -74,7 +74,6 @@ Wird diese Einstellung aktiviert, wird bei jeder Anfrage der Schlüssel überpr�
 
 Mittels eines Datei-Uploads über die Schaltfläche 'privater Schlüssel' kann der Schlüssel für die Anmeldung in Symcon hinterlegt werden.  
 Ist der der Schlüssel mit einem Passwort (Passphrase) gesichert, so ist Dieses im Passwort Feld einzutragen.  
-**Aufgrund der PHP Abhängigkeit zu Symcon werden aktuell nur RSA Schlüssel unterstützt.**  
 
 ## 5. Statusvariablen
 
