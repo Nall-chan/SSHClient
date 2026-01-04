@@ -67,7 +67,7 @@ class SSHClient extends IPSModuleStrict
     public function GetHostKey(): void
     {
         $this->SendDebug(__FUNCTION__, '', 0);
-        $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
+        $this->ssh = new \phpseclib3\Net\SSH2($this->ReadPropertyString('Address'));
         if (!@$this->ssh->login($this->ReadPropertyString('Username'), $this->ReadPropertyString('Password'))) {
             echo $this->Translate('Failed to connect or login!');
             return;
@@ -162,19 +162,18 @@ class SSHClient extends IPSModuleStrict
     private function Login(): bool
     {
         $this->SendDebug(__FUNCTION__, '', 0);
-        $this->ssh = new \phpseclib\Net\SSH2($this->ReadPropertyString('Address'));
+        $this->ssh = new \phpseclib3\Net\SSH2($this->ReadPropertyString('Address'));
         $KeyData = $this->ReadPropertyString('KeyFile');
         if ($KeyData) {
-            $key = new \phpseclib\Crypt\RSA();
             $pwd = $this->ReadPropertyString('Password');
-            if ($pwd) {
-                $key->setPassword($pwd);
+            if (!$pwd) {
+                $pwd = false;
             }
-            $key->loadKey(base64_decode($KeyData));
+            $key = \phpseclib3\Crypt\PublicKeyLoader::load(base64_decode($KeyData), $pwd);
         } else {
             $key = $this->ReadPropertyString('Password');
         }
-        if (!@$this->ssh->login($this->ReadPropertyString('Username'), $key)) {
+        if (!$this->ssh->login($this->ReadPropertyString('Username'), $key)) {
             return false;
         }
         if ($this->ReadPropertyBoolean('CheckHost')) {
@@ -182,7 +181,7 @@ class SSHClient extends IPSModuleStrict
             if ($HostKey == '') {
                 return false;
             }
-            if ($HostKey != $this->ssh->getServerPublicHostKey()) {
+            if ($HostKey = !$this->ssh->getServerPublicHostKey()) {
                 return false;
             }
         }
